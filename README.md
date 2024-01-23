@@ -32,6 +32,16 @@ This repository contains the backend API for a Warehouse Management System imple
 I only made public 2 end points for you to try it out:
 GET /unique_identifiers
 Which retrieves all the data form unique_identifiers table(warehouse table)
+example for Postamn:
+http://localhost:8080/unique_identifiers
 
 POST /add_or_update_unique_identifier
 This endpint firstly goes to check if certain product exists in the specific location, if yes just adds the pcs to existing value, if not is creates a new row in the table.
+example for Postman:
+{
+"color": "Wenge",
+"product_name" : "Amora Set",
+"warehouse": "HALA 3",
+"location": "M2-C-33",
+"pcs" : 77
+}
