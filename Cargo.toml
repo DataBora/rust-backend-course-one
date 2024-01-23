@@ -1,0 +1,13 @@
+[package]
+name = "backend-api-ras"
+version = "0.1.1"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.4.1"
+async-trait = "0.1.77"
+derive_more = "0.99.17"
+json = "0.12.4"
+mysql_async = "0.33.0"
+serde = {version = "1.0.195", features = ["derive"]}
+validator = {version = "0.16.1", features = ["derive"]}
