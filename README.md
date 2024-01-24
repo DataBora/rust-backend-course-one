@@ -29,19 +29,45 @@ This repository contains the backend API for a Warehouse Management System imple
 
 ### API Endpoints
 
-I only made public 2 end points for you to try it out:
-GET /unique_identifiers
-Which retrieves all the data form unique_identifiers table(warehouse table)
-example for Postamn:
-http://localhost:8080/unique_identifiers
+### API Endpoints
+
+I have implemented 3 public endpoints for you to try:
+
+1. **GET /unique_identifiers**
+
+   Retrieves all data from the `unique_identifiers` table (warehouse table).
+
+   Example for Postman:
+
+   ```plaintext
+   http://localhost:8080/unique_identifiers
+   ```
 
 POST /add_or_update_unique_identifier
-This endpint firstly goes to check if certain product exists in the specific location, if yes just adds the pcs to existing value, if not is creates a new row in the table.
-example for Postman:
+
+This endpoint first checks if a certain product exists at the specific location. If yes, it adds the specified quantity (pcs) to the existing value. If not, it creates a new row in the table.
+
+Example for Postman:
+
+````json
 {
-"color": "Wenge",
-"product_name" : "Amora Set",
-"warehouse": "HALA 3",
-"location": "M2-C-33",
-"pcs" : 77
+  "color": "Wenge",
+  "product_name": "Amora Set",
+  "warehouse": "HALA 3",
+  "location": "M2-C-33",
+  "pcs": 77
 }
+DELETE /remove_unique_identifiers
+
+This endpoint deducts the required quantity from a certain row. It checks if the row exists by unique identifier, then verifies if the quantity for pcs inserted is greater than the value in the database. If these conditions pass, the deduction takes place. If the value in the row of the identified product reaches 0, the row gets deleted from the table.
+
+Example for Postman:
+```json
+{
+  "color": "Wenge",
+  "product_name": "Amora Set",
+  "warehouse": "HALA 3",
+  "location": "M2-C-33",
+  "pcs": 77
+}
+````
