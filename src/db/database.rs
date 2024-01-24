@@ -10,7 +10,7 @@ pub struct Database {
 
 impl Database {
     pub async fn init() -> Result<Self, mysql_async::Error> {
-        let db_url = "mysql://databora:!Djavolak1@127.0.0.1:3306/wms";
+        let db_url = "mysql://user:pass@127.0.0.1:3306/wms";
         let pool = mysql_async::Pool::new(db_url);
         Ok(Database { pool })
     }

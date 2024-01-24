@@ -19,6 +19,8 @@ This repository contains the backend API for a Warehouse Management System imple
 - Rust 1.75
 - MySQL 80:
 - Schema name: wms
+  You need to provide your username and password at line:
+- let db_url = "mysql://user:pass@127.0.0.1:3306/wms";
 
 ### Installation
 
