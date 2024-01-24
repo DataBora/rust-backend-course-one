@@ -38,33 +38,17 @@ I have implemented 3 public endpoints for you to try:
 
    Retrieves all data from the `unique_identifiers` table (warehouse table).
 
-   Example for Postman:
-
-   ```plaintext
-   http://localhost:8080/unique_identifiers
-   ```
-
-POST /add_or_update_unique_identifier
+2. **POST /add_or_update_unique_identifier**
 
 This endpoint first checks if a certain product exists at the specific location. If yes, it adds the specified quantity (pcs) to the existing value. If not, it creates a new row in the table.
 
-Example for Postman:
-
-````{
-  "color": "Wenge",
-  "product_name": "Amora Set",
-  "warehouse": "HALA 3",
-  "location": "M2-C-33",
-  "pcs": 77
-}```
-
-
-DELETE /remove_unique_identifiers
+3. **DELETE /remove_unique_identifiers**
 
 This endpoint deducts the required quantity from a certain row. Firstly checks if the row exists by unique identifier, then verifies if the quantity for pcs inserted is greater than the value in the database. If these conditions pass, the deduction takes place. If the value in the row of the identified product reaches 0, the row gets deleted from the table.
 
 Example for Postman:
 
+```json
 {
   "color": "Wenge",
   "product_name": "Amora Set",
@@ -72,4 +56,4 @@ Example for Postman:
   "location": "M2-C-33",
   "pcs": 77
 }
-````
+```
