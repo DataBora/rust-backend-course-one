@@ -33,7 +33,7 @@ impl Database {
             update_data.color, update_data.product_name, update_data.warehouse, update_data.location
         );
     
-        // Insert or update the row using the MySQL syntax
+        // Insert or update the row using the MySQL
         let query = "INSERT INTO unique_identifiers (concatenated_string, color, product_name, warehouse, location, pcs) VALUES (?, ?, ?, ?, ?, ?)
                      ON DUPLICATE KEY UPDATE pcs = pcs + VALUES(pcs)";
         let params: Vec<_> = vec![
