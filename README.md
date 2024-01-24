@@ -49,14 +49,13 @@ This endpoint first checks if a certain product exists at the specific location.
 
 Example for Postman:
 
-````json
-{
+````{
   "color": "Wenge",
   "product_name": "Amora Set",
   "warehouse": "HALA 3",
   "location": "M2-C-33",
   "pcs": 77
-}
+}```
 
 
 DELETE /remove_unique_identifiers
@@ -65,7 +64,6 @@ This endpoint deducts the required quantity from a certain row. It checks if the
 
 Example for Postman:
 
-```json
 {
   "color": "Wenge",
   "product_name": "Amora Set",
