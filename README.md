@@ -57,11 +57,14 @@ Example for Postman:
   "location": "M2-C-33",
   "pcs": 77
 }
+
+
 DELETE /remove_unique_identifiers
 
 This endpoint deducts the required quantity from a certain row. It checks if the row exists by unique identifier, then verifies if the quantity for pcs inserted is greater than the value in the database. If these conditions pass, the deduction takes place. If the value in the row of the identified product reaches 0, the row gets deleted from the table.
 
 Example for Postman:
+
 ```json
 {
   "color": "Wenge",
