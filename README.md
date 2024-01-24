@@ -1,23 +1,24 @@
 # Warehouse Management System (WMS) API
 
-This repository is to show how solved real world implementation for Warehouse Management System, for Incoming products module.
+This repository is to show how I solved real world implementation for Warehouse Management System, for Incoming amd Outgoing products module.
 
-My real WMS that I implemented for my client Production Company - Mega Plast Jovanovic d.o.o., evolves around 1 single table, and 6 functions, 1 for each module.
+My WMS that I implemented for my client Production Company - Mega Plast Jovanovic d.o.o. Nova Pazova, Serbia, evolves around 1 single table, and 6 functions/ modules: Incoming, Outgoing, Reservation, Return, Transfer and Assembling.
 All the data for products, warehouses, locations, colors are coming from remote data list validatons that user just inputs into designated fields with easy search by typing into fields.
 Same can be achieved with scanner, only input changes.
 
-This real world wms is covering 2 warehouse with over 3000 locations, and is used by 2 warehouse managers.
+This real world WMS is covering 2 warehouse with over 3000 locations, and is used by 2 warehouse managers, without any collisions.
 
 My front end is build in Excel from witch I call all of the API's.
 
-Simple as it gets, and cheap as it gets, and it works perfectly with no collisiions as users never work on the same rows.
+Simple as it gets, and affordable as it gets for companies that use Microsoft tools.
 
 This repository contains the backend API for a Warehouse Management System implemented in Rust.
 
 ### Prerequisites
 
 - Rust 1.75
-- MySQL 80
+- MySQL 80:
+- Schema name: wms
 
 ### Installation
 
@@ -26,8 +27,6 @@ This repository contains the backend API for a Warehouse Management System imple
    ```bash
    git clone git@github.com:DataBora/wms-api-rust.git
    ```
-
-### API Endpoints
 
 ### API Endpoints
 
@@ -60,7 +59,7 @@ Example for Postman:
 
 DELETE /remove_unique_identifiers
 
-This endpoint deducts the required quantity from a certain row. It checks if the row exists by unique identifier, then verifies if the quantity for pcs inserted is greater than the value in the database. If these conditions pass, the deduction takes place. If the value in the row of the identified product reaches 0, the row gets deleted from the table.
+This endpoint deducts the required quantity from a certain row. Firstly checks if the row exists by unique identifier, then verifies if the quantity for pcs inserted is greater than the value in the database. If these conditions pass, the deduction takes place. If the value in the row of the identified product reaches 0, the row gets deleted from the table.
 
 Example for Postman:
 
