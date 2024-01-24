@@ -10,10 +10,17 @@ use validator::Validate;
 
 //GET / unique identifiers
 #[get("/unique_identifiers")]
-async fn get_unique_identifiers(db: Data<Database>) -> impl Responder{
-  
+async fn get_unique_identifiers(db: Data<Database>) -> impl Responder {
     match db.get_all_locations().await {
-        Ok(found_locations) => HttpResponse::Ok().json(found_locations),
+        Ok(found_locations) => {
+            if found_locations.is_empty() {
+                // If there is no data in the database, return a specific response
+                HttpResponse::NotFound().body("No data available in the database")
+            } else {
+                // If there is data, return the JSON response
+                HttpResponse::Ok().json(found_locations)
+            }
+        }
         Err(_) => HttpResponse::InternalServerError().body("Error retrieving unique identifiers"),
     }
 }

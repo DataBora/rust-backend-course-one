@@ -11,3 +11,4 @@ json = "0.12.4"
 mysql_async = "0.33.0"
 serde = {version = "1.0.195", features = ["derive"]}
 validator = {version = "0.16.1", features = ["derive"]}
+
