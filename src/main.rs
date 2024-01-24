@@ -1,9 +1,11 @@
+use actix_web::delete;
 use actix_web::web::Data;
 use actix_web::{get, post,  Responder, HttpResponse, HttpServer, App, web::Json};
+use models::outgoing::RemoveUniqueIdentifierRequest;
 mod models;
 mod db;
 use crate::db::Database;
-use crate::models::wposition::AddOrUpdateUniqueIdentifierRequest;
+use crate::models::incoming::AddOrUpdateUniqueIdentifierRequest;
 use validator::Validate;
 
 //GET / unique identifiers
@@ -32,6 +34,22 @@ async fn add_or_update_unique_identifier(body: Json<AddOrUpdateUniqueIdentifierR
     }
 }
 
+//UPDATE or DELETE unique identifiers
+#[delete("/remove_unique_identifiers")]
+async fn remove_unique_identifier(body: Json<RemoveUniqueIdentifierRequest>, db: Data<Database>) -> impl Responder {
+    let is_valid = body.validate();
+
+    match is_valid {
+        Ok(_) => {
+        match db.remove_unique_identifier(&body).await{
+            Ok(_)=> HttpResponse::Ok().body("Identifier updated or removed succefully!"),
+            Err(_)=> HttpResponse::InternalServerError().body("Faile to update or remove identifier. Posible reason: Not enough quantity for removal."),
+            }
+        }
+        Err(_)=> HttpResponse::BadRequest().body("Invalid input. Please provide valid identifier details.")
+    }
+}
+
 
 #[actix_web::main]
 async fn main()-> std::io::Result<()> {
@@ -45,6 +63,7 @@ async fn main()-> std::io::Result<()> {
                     .app_data(db_data.clone())
                     .service(get_unique_identifiers)
                     .service(add_or_update_unique_identifier)
+                    .service(remove_unique_identifier)
                     
             })
             .bind("127.0.0.1:8080")?
