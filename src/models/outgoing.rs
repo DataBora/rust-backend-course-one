@@ -40,6 +40,6 @@ pub struct RemoveUniqueIdentifierRequest{
     pub warehouse: String,
     #[validate(length(min =1, message = "Location is required"))]
     pub location: String,
-    #[validate(range(min = 1, max = 10000, message = "PCS must be between 1 and 100"))]
+    #[validate(range(min = 1, max = 10000, message = "PCS must be between 1 and 10000"))]
     pub pcs: i32,
 }
