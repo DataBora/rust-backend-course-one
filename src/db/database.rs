@@ -335,17 +335,17 @@ impl Database {
         if *pcs > current_pcs {
             return Err(mysql_async::Error::from(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Not enough pcs for deduction")));
         }
-
+//----------------------------------------------------------------------------------------
         let query_current_sales = r#"
-        SELECT pcs
-        FROM sales_orders
-        WHERE order_number = :order_number AND product_code = :product_code
+            SELECT pcs
+            FROM sales_orders
+            WHERE order_number = :order_number AND product_code = :product_code
          "#;
     
    
         let mut conn = self.pool.get_conn().await?;
       
-         let query_params_sales = params! {
+        let query_params_sales = params! {
             "order_number" => order_number,
             "product_code" => product_code
         };
@@ -359,7 +359,40 @@ impl Database {
         if *pcs > sales_order_pcs{
             return Err(mysql_async::Error::from(std::io::Error::new(std::io::ErrorKind::InvalidInput, "That is more Pcs than neccessary for Order Fulfilment.")));
         }
+    //------------------------------------------------------------------------------------
+        let query_reserved_pcs = r#"
+        SELECT 
+        CASE 
+            WHEN EXISTS (
+                SELECT pcs
+                FROM reservations
+                WHERE order_number = :order_number AND product_code = :product_code
+            )
+            THEN (SELECT pcs FROM reservations WHERE order_number = :order_number AND product_code = :product_code)
+            ELSE 0 
+        END AS reserved_pcs;
+        "#;
+
+
+        let mut conn = self.pool.get_conn().await?;
     
+        let query_params_reserved_pcs = params! {
+            "order_number" => order_number,
+            "product_code" => product_code
+        };
+
+        let reserved_pcs: Option<i32> = conn.exec_first(query_reserved_pcs, query_params_reserved_pcs).await?;
+
+        // Ensure the product exists
+        let reserved_pcs = reserved_pcs.ok_or_else(|| mysql_async::Error::from(std::io::Error::new(std::io::ErrorKind::NotFound, "Product not found")))?;
+
+         // Check if requested pcs is greater than the sales_order pcs + 
+         if (*pcs + reserved_pcs) > sales_order_pcs{
+            return Err(mysql_async::Error::from(std::io::Error::new(std::io::ErrorKind::InvalidInput, "That is more Pcs than neccessary for Order Fulfilment.")));
+        }
+
+
+    //------------------------------------------------------------------------------------
       
         // Update the remaining quantity in the unique_identifiers table
         let query_update = r#"
