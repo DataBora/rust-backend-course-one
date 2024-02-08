@@ -335,9 +335,33 @@ impl Database {
         if *pcs > current_pcs {
             return Err(mysql_async::Error::from(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Not enough pcs for deduction")));
         }
+
+        let query_current_sales = r#"
+        SELECT pcs
+        FROM sales_orders
+        WHERE order_number = :order_number AND product_code = :product_code
+         "#;
+    
+   
+        let mut conn = self.pool.get_conn().await?;
+      
+         let query_params_sales = params! {
+            "order_number" => order_number,
+            "product_code" => product_code
+        };
+
+        let sales_order_pcs: Option<i32> = conn.exec_first(query_current_sales, query_params_sales).await?;
+
+          // Ensure the product exists
+        let sales_order_pcs = sales_order_pcs.ok_or_else(|| mysql_async::Error::from(std::io::Error::new(std::io::ErrorKind::NotFound, "Product not found")))?;
+
+         // Check if requested pcs is greater than the sales_order pcs
+        if *pcs > sales_order_pcs{
+            return Err(mysql_async::Error::from(std::io::Error::new(std::io::ErrorKind::InvalidInput, "That is more Pcs than neccessary for Order Fulfilment.")));
+        }
     
       
-                // Update the remaining quantity in the unique_identifiers table
+        // Update the remaining quantity in the unique_identifiers table
         let query_update = r#"
             UPDATE unique_identifiers
             SET pcs = pcs - :pcs
