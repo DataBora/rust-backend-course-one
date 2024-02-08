@@ -181,7 +181,7 @@ async fn delete_sales_order(db: Data<Database>, po_number: Path<GetSalesOrder>) 
 }
 
 //DELETE reservation
-#[delete("delete_sales_order/{order_number}")]
+#[delete("delete_reservation/{order_number}")]
 async fn delete_reservation(db: Data<Database>, po_number: Path<DeleteReservations>) -> impl Responder {
 
     let is_valid = po_number.validate();
@@ -292,6 +292,7 @@ async fn main()-> std::io::Result<()> {
                     .service(get_sales_orders)
                     .service(get_sales_order_by_po)
                     .service(delete_sales_order)
+                    .service(delete_reservation)
                     .service(get_sales_order_products_operations)
                     .service(add_reservation)
                     .service(get_order_fulfilment)
