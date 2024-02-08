@@ -4,6 +4,8 @@ use crate::models::incoming::UniqueIdentifier;
 use crate::models::incoming::AddOrUpdateUniqueIdentifierRequest;
 use crate::models::outgoing::RemoveUniqueIdentifierRequest;
 use crate::models::incoming::GetProductLocations;
+use crate::models::incoming::GetProductLocationsByCode;
+use crate::models::reservations::DeleteReservations;
 use crate::models::salesorder::SalesOrder;
 use crate::models::salesorder::GetSalesOrder;
 use crate::models::salesorder::SalesOrderProduct;
@@ -36,7 +38,7 @@ impl Database {
         Ok(locations)
     }
 
-    // function for unique identifiers to get locations for single product
+    //  get locations for single product by PRODUCT NAME
     pub async fn get_product_locations(&self, product: &GetProductLocations) -> Result<Vec<UniqueIdentifier>, Error> {
 
         let product_name = &product.product_name;
@@ -53,6 +55,25 @@ impl Database {
 
         Ok(locations)
     }
+
+    // get locations for single product by PRODUCT CODE
+    pub async fn get_product_locations_by_code(&self, product: &GetProductLocationsByCode) -> Result<Vec<UniqueIdentifier>, Error> {
+
+        let product_code = &product.product_code;
+        
+        let query = "SELECT * FROM unique_identifiers WHERE product_code = :product_code";
+     
+        let named_params = params! {
+            "product_code" => product_code,
+        };
+      
+        let mut conn = self.pool.get_conn().await?;
+
+        let locations: Vec<UniqueIdentifier> = conn.exec(query, named_params.clone()).await?;
+
+        Ok(locations)
+    }
+
 
       //functions for sales_orders to get all orders
       pub async fn get_sales_orders(&self) ->  Result<Vec<SalesOrder>, Error> {
@@ -206,6 +227,7 @@ impl Database {
         Ok(())
     }
 
+    //delete sales order by order number
     pub async fn delete_sales_order(&self, po_number: &GetSalesOrder)-> Result<(),Error> {
         
         let order_number = &po_number.order_number;
@@ -223,6 +245,26 @@ impl Database {
         Ok(())
 
     }
+
+    //delete reservation by order number
+    pub async fn delete_reservation(&self, po_number: &DeleteReservations)-> Result<(),Error> {
+        
+        let order_number = &po_number.order_number;
+      
+        let query = "DELETE FROM reservations WHERE order_number = :order_number";
+     
+        let named_params = params! {
+            "order_number" => order_number,
+        };
+      
+        let mut conn = self.pool.get_conn().await?;
+
+        conn.exec_drop(query, named_params.clone()).await?;
+
+        Ok(())
+
+    }
+
 
     //GET for comparing sales orders and unique identifiers 
     pub async fn get_sales_order_products_operations(

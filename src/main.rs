@@ -9,9 +9,11 @@ mod db;
 use crate::db::Database;
 use crate::models::incoming::AddOrUpdateUniqueIdentifierRequest;
 use crate::models::incoming::GetProductLocations;
+use crate::models::incoming::GetProductLocationsByCode;
 use crate::models::salesorder::SalesOrder;
 use crate::models::salesorder::GetSalesOrder;
 use crate::models::reservations::AddReservationForOrderNumber;
+use crate::models::reservations::DeleteReservations;
 
 use validator::Validate;
 
@@ -30,15 +32,40 @@ async fn get_unique_identifiers(db: Data<Database>) -> impl Responder {
     }
 }
 
-//GET / unique identifier locations for single product
+//GET / unique identifier locations for single product by product name
 #[get("/unique_identifiers/{product_name}")]
-async fn get_locations_for_single_product( db: Data<Database>, product: Path<GetProductLocations>) -> impl Responder {
+async fn get_locations_for_single_product_by_name( db: Data<Database>, product: Path<GetProductLocations>) -> impl Responder {
     
     let is_valid = product.validate(); 
 
     match is_valid {
         Ok(_) => {
             match db.get_product_locations(&product).await {
+                Ok(locations) => {
+                    if !locations.is_empty() {
+                        HttpResponse::Ok().json(locations)
+                    } else {
+                        HttpResponse::NotFound().body("No locations found for the specified product.")
+                    }
+                }
+                Err(_) => HttpResponse::InternalServerError().body("Failed to find the locations."),
+            }
+        }
+        Err(_) => HttpResponse::InternalServerError().body("Error retrieving unique identifiers"),
+    }
+
+  
+}
+
+//GET / unique identifier locations for single product by product name
+#[get("/unique_identifiers/{product_code}")]
+async fn get_locations_for_single_product_by_code( db: Data<Database>, product: Path<GetProductLocationsByCode>) -> impl Responder {
+    
+    let is_valid = product.validate(); 
+
+    match is_valid {
+        Ok(_) => {
+            match db.get_product_locations_by_code(&product).await {
                 Ok(locations) => {
                     if !locations.is_empty() {
                         HttpResponse::Ok().json(locations)
@@ -153,6 +180,26 @@ async fn delete_sales_order(db: Data<Database>, po_number: Path<GetSalesOrder>) 
   
 }
 
+//DELETE reservation
+#[delete("delete_sales_order/{order_number}")]
+async fn delete_reservation(db: Data<Database>, po_number: Path<DeleteReservations>) -> impl Responder {
+
+    let is_valid = po_number.validate();
+
+    match is_valid {
+        Ok(_) => {
+            match db.delete_reservation(&po_number).await {
+                Ok(_) => HttpResponse::Ok().body("Reservation deleted successfully!"),
+                Err(_) => HttpResponse::NotFound().body("No Reservations found for the specified PO number."),
+                }
+                
+            },
+        Err(_) => HttpResponse::InternalServerError().body("Error retrieving Sales Orders"),
+    }
+
+  
+}
+
 
 //UPDATE or DELETE unique identifiers
 #[delete("/remove_unique_identifiers")]
@@ -237,7 +284,8 @@ async fn main()-> std::io::Result<()> {
                 App::new()
                     .app_data(db_data.clone())
                     .service(get_unique_identifiers)
-                    .service(get_locations_for_single_product)
+                    .service(get_locations_for_single_product_by_code)
+                    .service(get_locations_for_single_product_by_name)
                     .service(add_or_update_unique_identifier)
                     .service(remove_unique_identifier)
                     .service(insert_sales_order)

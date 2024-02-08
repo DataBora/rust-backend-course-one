@@ -50,11 +50,18 @@ pub struct AddOrUpdateUniqueIdentifierRequest{
 }
 
 
-//adding get request for single product location
+//struct for adding get request for single product location by nproduct name
 #[derive(Serialize,Deserialize,Validate)]
 pub struct GetProductLocations{
     #[validate(length(min =1, message = "Product name is required"))]
     pub product_name: String,
+}
+
+//struct for  get request for single product location by product code
+#[derive(Serialize,Deserialize,Validate)]
+pub struct GetProductLocationsByCode{
+    #[validate(length(min =1, message = "Product Code is required"))]
+    pub product_code: String,
 }
 
 //adding get request for product_code and pcs for sales order
