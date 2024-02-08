@@ -3,7 +3,7 @@ use mysql_async::{prelude::Queryable, Error, Value, params};
 use crate::models::incoming::UniqueIdentifier;
 use crate::models::incoming::AddOrUpdateUniqueIdentifierRequest;
 use crate::models::outgoing::RemoveUniqueIdentifierRequest;
-use crate::models::incoming::GetProductLocations;
+use crate::models::incoming::GetProductLocationsByName;
 use crate::models::incoming::GetProductLocationsByCode;
 use crate::models::reservations::DeleteReservations;
 use crate::models::salesorder::SalesOrder;
@@ -39,7 +39,7 @@ impl Database {
     }
 
     //  get locations for single product by PRODUCT NAME
-    pub async fn get_product_locations(&self, product: &GetProductLocations) -> Result<Vec<UniqueIdentifier>, Error> {
+    pub async fn get_product_locations_by_name(&self, product: &GetProductLocationsByName) -> Result<Vec<UniqueIdentifier>, Error> {
 
         let product_name = &product.product_name;
         
@@ -246,7 +246,7 @@ impl Database {
 
     }
 
-    //delete reservation by order number
+    // delete reservation by order number
     pub async fn delete_reservation(&self, po_number: &DeleteReservations)-> Result<(),Error> {
         
         let order_number = &po_number.order_number;

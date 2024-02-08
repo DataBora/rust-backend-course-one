@@ -8,7 +8,7 @@ mod db;
 
 use crate::db::Database;
 use crate::models::incoming::AddOrUpdateUniqueIdentifierRequest;
-use crate::models::incoming::GetProductLocations;
+use crate::models::incoming::GetProductLocationsByName;
 use crate::models::incoming::GetProductLocationsByCode;
 use crate::models::salesorder::SalesOrder;
 use crate::models::salesorder::GetSalesOrder;
@@ -33,14 +33,14 @@ async fn get_unique_identifiers(db: Data<Database>) -> impl Responder {
 }
 
 //GET / unique identifier locations for single product by product name
-#[get("/unique_identifiers/{product_name}")]
-async fn get_locations_for_single_product_by_name( db: Data<Database>, product: Path<GetProductLocations>) -> impl Responder {
+#[get("/unique_identifiers_name/{product_name}")]
+async fn get_locations_for_single_product_by_name( db: Data<Database>, product_name: Path<GetProductLocationsByName>) -> impl Responder {
     
-    let is_valid = product.validate(); 
+    let is_valid = product_name.validate(); 
 
     match is_valid {
         Ok(_) => {
-            match db.get_product_locations(&product).await {
+            match db.get_product_locations_by_name(&product_name).await {
                 Ok(locations) => {
                     if !locations.is_empty() {
                         HttpResponse::Ok().json(locations)
@@ -58,14 +58,14 @@ async fn get_locations_for_single_product_by_name( db: Data<Database>, product: 
 }
 
 //GET / unique identifier locations for single product by product name
-#[get("/unique_identifiers/{product_code}")]
-async fn get_locations_for_single_product_by_code( db: Data<Database>, product: Path<GetProductLocationsByCode>) -> impl Responder {
+#[get("/unique_identifiers_code/{product_code}")]
+async fn get_locations_for_single_product_by_code( db: Data<Database>, product_code: Path<GetProductLocationsByCode>) -> impl Responder {
     
-    let is_valid = product.validate(); 
+    let is_valid = product_code.validate(); 
 
     match is_valid {
         Ok(_) => {
-            match db.get_product_locations_by_code(&product).await {
+            match db.get_product_locations_by_code(&product_code).await {
                 Ok(locations) => {
                     if !locations.is_empty() {
                         HttpResponse::Ok().json(locations)
