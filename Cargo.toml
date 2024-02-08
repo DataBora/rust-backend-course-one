@@ -5,7 +5,6 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.4.1"
-actix-multipart = "0.6.1"
 async-trait = "0.1.77"
 derive_more = "0.99.17"
 json = "0.12.4"
