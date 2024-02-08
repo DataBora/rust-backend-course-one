@@ -176,8 +176,6 @@ async fn delete_sales_order(db: Data<Database>, po_number: Path<GetSalesOrder>) 
             },
         Err(_) => HttpResponse::InternalServerError().body("Error retrieving Sales Orders"),
     }
-
-  
 }
 
 //DELETE reservation
@@ -196,8 +194,6 @@ async fn delete_reservation(db: Data<Database>, po_number: Path<DeleteReservatio
             },
         Err(_) => HttpResponse::InternalServerError().body("Error retrieving Sales Orders"),
     }
-
-  
 }
 
 
@@ -232,7 +228,6 @@ async fn get_sales_order_products_operations(db: Data<Database>, order_number: P
         }
         Err(_) => HttpResponse::BadRequest().body("Failed to retreive data from database.")
     }
-
 }
 
 #[post("/add_reservation")]
@@ -270,7 +265,6 @@ async fn get_order_fulfilment(db: Data<Database>, order_number: Path<GetSalesOrd
         }
         Err(_) => HttpResponse::BadRequest().body("Failed to retreive data from database.")
     }
-
 }
 
 #[actix_web::main]
