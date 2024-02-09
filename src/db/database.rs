@@ -275,18 +275,46 @@ impl Database {
         let order_number = &po_number.order_number;
 
         let query = r#"
-                    SELECT
-                    u.product_code,
-                    u.color,
-                    u.product_name,
-                    u.warehouse,
-                    u.location,
-                    COALESCE(u.pcs, 0) AS warehouse_pcs,
-                    COALESCE(s.pcs, 0) AS order_pcs,
-                    COALESCE(u.pcs, 0) - COALESCE(s.pcs, 0) AS pcs_difference
-                FROM sales_orders s
-                LEFT JOIN unique_identifiers u ON s.product_code = u.product_code
-                WHERE s.order_number = :order_number
+        WITH ranked_locations AS (
+            SELECT
+                u.product_code,
+                u.color,
+                u.product_name,
+                u.warehouse,
+                u.location,
+                u.pcs AS warehouse_pcs,
+                COALESCE(s.pcs, 0) AS order_pcs,
+                ROW_NUMBER() OVER (PARTITION BY u.product_code ORDER BY u.pcs) AS location_rank
+            FROM unique_identifiers u
+            LEFT JOIN sales_orders s ON u.product_code = s.product_code AND s.order_number = :order_number
+        )
+        SELECT
+            product_code,
+            color,
+            product_name,
+            warehouse,
+            location,
+            warehouse_pcs,
+            order_pcs,
+            CASE
+                WHEN order_pcs <= 0 THEN 0  -- No order to fulfill
+                WHEN SUM(warehouse_pcs) OVER (PARTITION BY product_code ORDER BY location_rank) >= order_pcs THEN 
+                    GREATEST(order_pcs - COALESCE(SUM(warehouse_pcs) OVER (PARTITION BY product_code ORDER BY location_rank ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0), 0) 
+                ELSE 
+                    GREATEST(warehouse_pcs, 0)  -- Fulfill the order from this location
+            END AS deducted_pcs,
+            CASE
+                WHEN order_pcs <= 0 THEN 0  -- No order to fulfill
+                WHEN SUM(warehouse_pcs) OVER (PARTITION BY product_code ORDER BY location_rank) >= order_pcs THEN 
+                    GREATEST(warehouse_pcs - (order_pcs - COALESCE(SUM(warehouse_pcs) OVER (PARTITION BY product_code ORDER BY location_rank ROWS BETWEEN UNBOUNDED PRECEDING AND 1 PRECEDING), 0)), 0)
+                ELSE 
+                    warehouse_pcs - order_pcs 
+            END AS difference
+        FROM ranked_locations;
+        
+        
+        
+        
         "#;
         
         let named_params = params! {

@@ -47,22 +47,23 @@ pub struct SalesOrderProduct {
     pub location: Option<String>,
     pub warehouse_pcs: Option<i32>,
     pub order_pcs: Option<i32>,
-    pub pcs_difference: Option<i32>,
+    pub deducted_pcs: Option<i32>,
+    pub difference: Option<i32>,
     
 }
 
 impl FromRow for SalesOrderProduct {
     fn from_row(row: Row) -> Self{
 
-        let (product_code, color, product_name, warehouse, location, warehouse_pcs, order_pcs, pcs_difference):(Option<String>,Option<String>, Option<String>, Option<String>, Option<String>,  Option<i32> ,  Option<i32>, Option<i32>) = mysql_async::from_row(row);
+        let (product_code, color, product_name, warehouse, location, warehouse_pcs, order_pcs, deducted_pcs, difference):(Option<String>,Option<String>, Option<String>, Option<String>, Option<String>,  Option<i32> , Option<i32>, Option<i32>, Option<i32>) = mysql_async::from_row(row);
 
-        SalesOrderProduct{product_code, color, product_name, warehouse, location, warehouse_pcs, order_pcs, pcs_difference,}
+        SalesOrderProduct{product_code, color, product_name, warehouse, location, warehouse_pcs, order_pcs, deducted_pcs, difference}
     }
 
     fn from_row_opt(row: Row) -> Result<Self, mysql_async::FromRowError> {
-        let (product_code, color, product_name, warehouse, location, warehouse_pcs, order_pcs, pcs_difference):(Option<String>,Option<String>,Option<String>,Option<String>,Option<String>,  Option<i32>,  Option<i32>,Option<i32>) = mysql_async::from_row(row);
+        let (product_code, color, product_name, warehouse, location, warehouse_pcs, order_pcs, deducted_pcs, difference):(Option<String>,Option<String>,Option<String>,Option<String>,Option<String>, Option<i32>, Option<i32>,  Option<i32>,Option<i32>) = mysql_async::from_row(row);
 
-        Ok(SalesOrderProduct{product_code, color, product_name, warehouse, location, warehouse_pcs, order_pcs, pcs_difference})
+        Ok(SalesOrderProduct{product_code, color, product_name, warehouse, location, warehouse_pcs, order_pcs, deducted_pcs, difference})
     }
     
     
