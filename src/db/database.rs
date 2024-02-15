@@ -227,6 +227,20 @@ impl Database {
         Ok(())
     }
 
+        // Check if sales order exists
+    pub async fn check_sales_order_existence(&self, po_number: &GetSalesOrder) -> Result<bool, Error> {
+        let order_number = &po_number.order_number;
+        let query = "SELECT COUNT(*) FROM sales_orders WHERE order_number = :order_number";
+        let named_params = params! {
+            "order_number" => order_number,
+        };
+
+        let mut conn = self.pool.get_conn().await?;
+        let count: u64 = conn.exec_first(query, named_params.clone()).await?.unwrap();
+        
+        Ok(count > 0)
+    }
+
     //delete sales order by order number
     pub async fn delete_sales_order(&self, po_number: &GetSalesOrder)-> Result<(),Error> {
         
@@ -243,6 +257,23 @@ impl Database {
         conn.exec_drop(query, named_params.clone()).await?;
 
         Ok(())
+
+    }
+
+      //check if reservation exists
+      pub async fn check_reservations_existance(&self, po_number: &DeleteReservations)->Result<bool, Error>{
+        let order_number = &po_number.order_number;
+
+        let query = "SELECT COUNT(*) FROM reservations where order_number = :order_number";
+
+        let named_params = params! {
+            "order_number" => order_number,
+        };
+
+        let mut conn = self.pool.get_conn().await?;
+        let count: u64 = conn.exec_first(query, named_params.clone()).await?.unwrap();
+        Ok(count>0)
+
 
     }
 

@@ -81,7 +81,7 @@ impl FromRow for GetReservationsPerSalesOrder {
 
 }
 
-#[derive(Validate, Deserialize, Serialize)]
+#[derive(Validate, Deserialize, Serialize, Debug)]
 pub struct DeleteReservations{
     #[validate(length(min =1, message = "Order Number is required"))]
     pub order_number: String

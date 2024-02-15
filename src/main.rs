@@ -163,34 +163,46 @@ async fn insert_sales_order(
 //DELETE sales order
 #[delete("delete_sales_order/{order_number}")]
 async fn delete_sales_order(db: Data<Database>, po_number: Path<GetSalesOrder>) -> impl Responder {
-
+   
     let is_valid = po_number.validate();
+    
 
     match is_valid {
         Ok(_) => {
-            match db.delete_sales_order(&po_number).await {
-                Ok(_) => HttpResponse::Ok().body("Sales Order deleted successfully!"),
-                Err(_) => HttpResponse::NotFound().body("No Sales Orders found for the specified PO number."),
+            match db.check_sales_order_existence(&po_number).await {
+                Ok(true) => {
+                    // Order exists, proceed with deletion
+                    match db.delete_sales_order(&po_number).await {
+                        Ok(_) => HttpResponse::Ok().body("Sales Order deleted successfully!"),
+                        Err(_) => HttpResponse::InternalServerError().body("Error deleting Sales Order"),
+                    }
                 }
-                
-            },
-        Err(_) => HttpResponse::InternalServerError().body("Error retrieving Sales Orders"),
+                Ok(false) => HttpResponse::NotFound().body("No Sales Orders found for the specified order number."),
+                Err(_) => HttpResponse::InternalServerError().body("Error retrieving Sales Orders"),
+            }
+        }
+        Err(_) => HttpResponse::InternalServerError().body("Invalid order number format"),
     }
 }
 
 //DELETE reservation
 #[delete("delete_reservation/{order_number}")]
 async fn delete_reservation(db: Data<Database>, po_number: Path<DeleteReservations>) -> impl Responder {
-
+  
     let is_valid = po_number.validate();
 
     match is_valid {
         Ok(_) => {
-            match db.delete_reservation(&po_number).await {
-                Ok(_) => HttpResponse::Ok().body("Reservation deleted successfully!"),
-                Err(_) => HttpResponse::NotFound().body("No Reservations found for the specified PO number."),
+            match db.check_reservations_existance(&po_number).await {
+                Ok(true) => {
+                    match db.delete_reservation(&po_number).await {
+                        Ok(_) => HttpResponse::Ok().body("Reservation deleted successfully!"),
+                        Err(_) => HttpResponse::InternalServerError().body("Error deleting Reservation"),
+                    }
                 }
-                
+                Ok(false) => HttpResponse::NotFound().body("No Reservations found for the specified order number."),
+                Err(_) => HttpResponse::InternalServerError().body("Error retrieving Reservation"), 
+                }  
             },
         Err(_) => HttpResponse::InternalServerError().body("Error retrieving Sales Orders"),
     }

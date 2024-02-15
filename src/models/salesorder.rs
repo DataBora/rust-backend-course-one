@@ -70,7 +70,7 @@ impl FromRow for SalesOrderProduct {
 }
 
 //adding get request for single product location
-#[derive(Validate, Deserialize, Serialize)]
+#[derive(Validate, Deserialize, Serialize, Debug)]
 pub struct GetSalesOrder{
     #[validate(length(min =1, message = "Order Number is required"))]
     pub order_number: String,
