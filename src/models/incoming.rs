@@ -4,7 +4,7 @@ use mysql_async::prelude::FromRow;
 use mysql_async::Row;
 
 //initializaing unique identifier object
-#[derive(Serialize, Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct UniqueIdentifier{
     pub concatenated_string: String,
     pub product_code: String,
@@ -15,7 +15,6 @@ pub struct UniqueIdentifier{
     pub pcs: i32,
 
 }
-
 
 impl FromRow for UniqueIdentifier {
     fn from_row(row: Row) -> Self{
@@ -33,6 +32,7 @@ impl FromRow for UniqueIdentifier {
     
     
 }
+
 
 //adding unique identifier request
 #[derive(Validate, Deserialize, Serialize)]
