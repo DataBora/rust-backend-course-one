@@ -1,18 +1,11 @@
+use std::env;
+use dotenv::dotenv;
 
 use mysql_async::{prelude::Queryable, Error, Value, params};
-use crate::models::incoming::UniqueIdentifier;
-use crate::models::incoming::AddOrUpdateUniqueIdentifierRequest;
 use crate::models::outgoing::RemoveUniqueIdentifierRequest;
-use crate::models::incoming::GetProductLocationsByName;
-use crate::models::incoming::GetProductLocationsByCode;
-use crate::models::reservations::DeleteReservations;
-use crate::models::salesorder::SalesOrder;
-use crate::models::salesorder::GetSalesOrder;
-use crate::models::salesorder::SalesOrderProduct;
-use crate::models::reservations::AddReservationForOrderNumber;
-use crate::models::reservations::GetReservationsPerSalesOrder;
-
-
+use crate::models::incoming::{GetProductLocationsByCode,GetProductLocationsByName, UniqueIdentifier,AddOrUpdateUniqueIdentifierRequest};
+use crate::models::salesorder::{SalesOrder,GetSalesOrder,SalesOrderProduct};
+use crate::models::reservations::{AddReservationForOrderNumber,GetReservationsPerSalesOrder,DeleteReservations};
 
 
 #[derive(Clone)]
@@ -22,11 +15,12 @@ pub struct Database {
 
 impl Database {
     pub async fn init() -> Result<Self, mysql_async::Error> {
-        let db_url = "mysql://databora:!Djavolak1@127.0.0.1:3306/wms";
-        let pool = mysql_async::Pool::new(db_url);
+        dotenv().ok();
+        let db_url = env::var("MYSQL_DB_URL").expect("MYSQL_DB_URL not set in .env file");
+        let pool = mysql_async::Pool::new(db_url.as_str());
         Ok(Database { pool })
     }
-
+    // -------------- DATABASE FUNCTIONS ------------------ //
     //functions for unique_identifiers to get all locations
 
     pub async fn get_all_locations(&self) ->  Result<Vec<UniqueIdentifier>, Error> {
@@ -571,7 +565,34 @@ impl Database {
     
     
 }
-    
 
+
+
+// --------------- TESTING ----------------- //
+    
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_get_all_locations() {
+        // Arrange: Initialize the connection pool
+        let db = Database::init().await.unwrap();
+        // Act: Call the function you want to test
+        let result = db.get_all_locations().await;
+        // Assert: Check if the result is as expected
+        match result {
+            Ok(locations)=> {
+                assert!(!locations.is_empty())
+            }
+            Err(err)=>{
+                panic!("Error {:?}", err)
+            }
+
+        }
+
+
+    }
+}
 
 
