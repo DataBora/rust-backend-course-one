@@ -8,11 +8,10 @@ This implementation doesn't require scanning the products after productin, and b
 
 This real life WMS is covering 2 warehouse with over 3000 locations, and it is used by 2 warehouse managers, without any collisions.
 
-My front end is build within Excel from which all the API's are called.
-You can check YouTube video to see live presentation: https://www.youtube.com/watch?v=F2kNQLhCr-E
-
+Front-end is built with VBA and Excel from which all the API's are called.
 Backend is implemented with Rust and SQL.
-Fronted with VBA and Excel.
+
+You can check YouTube video to see live presentation: https://www.youtube.com/watch?v=F2kNQLhCr-E
 
 ### Prerequisites
 
