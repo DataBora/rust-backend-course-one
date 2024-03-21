@@ -6,7 +6,7 @@ mod api;
 
 use crate::db::database::Database;
 
-use api::mysqlapi::{get_unique_identifiers, get_locations_for_single_product_by_code, get_locations_for_single_product_by_name,get_order_fulfilment, get_sales_order_by_po, get_sales_orders, get_sales_order_products_operations, add_or_update_unique_identifier, add_reservation, insert_sales_order, delete_reservation, delete_sales_order, remove_unique_identifier};
+use api::mysqlapi::{get_unique_identifiers, get_locations_for_single_product_by_code, get_locations_for_single_product_by_name, add_or_update_unique_identifier,  remove_unique_identifier};
 
 
 
@@ -25,14 +25,6 @@ async fn main()-> std::io::Result<()> {
                     .service(get_locations_for_single_product_by_name)
                     .service(add_or_update_unique_identifier)
                     .service(remove_unique_identifier)
-                    .service(insert_sales_order)
-                    .service(get_sales_orders)
-                    .service(get_sales_order_by_po)
-                    .service(delete_sales_order)
-                    .service(delete_reservation)
-                    .service(get_sales_order_products_operations)
-                    .service(add_reservation)
-                    .service(get_order_fulfilment)
                     
             })
             .bind("127.0.0.1:8080")?
