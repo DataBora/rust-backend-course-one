@@ -49,3 +49,29 @@ This end-point first checks if a certain product exists at the specific location
 5. **DELETE /remove_unique_identifiers**
 
 This end-point deducts the required quantity from a certain row in unique_identifier table. Firstly checks if the row exists by unique identifier, then verifies if the quantity for pcs inserted is greater than the value in the database. If these conditions pass, the deduction takes place. If the value in the row of the identified product reaches 0, the row gets deleted from the table.
+
+## Database Schema
+
+Below is the schema of the database tables used in this project:
+
+### Products Table
+
+| Column Name  | Data Type    | Constraints |
+| ------------ | ------------ | ----------- |
+| product_code | VARCHAR(255) | Primary Key |
+| color        | VARCHAR(255) |             |
+| product_name | VARCHAR(255) |             |
+
+### Unique Identifiers Table
+
+| Column Name         | Data Type    | Constraints                                    |
+| ------------------- | ------------ | ---------------------------------------------- |
+| concatenated_string | VARCHAR(255) | Primary Key                                    |
+| product_code        | VARCHAR(255) | Foreign Key (references products.product_code) |
+| color               | VARCHAR(255) |                                                |
+| product_name        | VARCHAR(255) |                                                |
+| warehouse           | VARCHAR(255) |                                                |
+| location            | VARCHAR(255) |                                                |
+| pcs                 | INT          |                                                |
+
+Foreign Key Relationship: `unique_identifiers.product_code` references `products.product_code`.
