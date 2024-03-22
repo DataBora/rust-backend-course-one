@@ -158,15 +158,17 @@ impl Database {
 
 
 // --------------- TESTING ----------------- //
-    
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[tokio::test]
+    //fn get_all_locations
     async fn test_get_all_locations() {
         // Arrange: Initialize the connection pool
-        let db = Database::init().await.unwrap();
+        let db = Database::init().await.expect("Failed to connect to database.");
         // Act: Call the function you want to test
         let result = db.get_all_locations().await;
         // Assert: Check if the result is as expected
@@ -179,8 +181,66 @@ mod tests {
             }
 
         }
+    }
 
+    #[tokio::test]
+    //fn get_product_locations_by_name
+    async fn get_product_locations_by_name() {
+        // Arrange: Initialize the connection pool
+        let db = Database::init().await.expect("Fail to connect to database");
+        
+        // Act: Call the function you want to test
+        let product_name = "Smart thermostat".to_string();
+        let param = GetProductLocationsByName { product_name };
+        let result = db.get_product_locations_by_name(&param).await;
+    
+        // Assert: Check if the result is as expected
+        match result {
+            Ok(unique_identifiers) => {
+                assert!(!unique_identifiers.is_empty(), "Result should not be empty");
+    
+                for product in unique_identifiers {
+                    assert!(!product.product_code.is_empty(), "Product code is missing or empty");
+                    assert!(!product.color.is_empty(), "Product code is missing or empty");
+                    assert!(!product.product_name.is_empty(), "Product code is missing or empty");
+                    assert!(!product.warehouse.is_empty(), "Product code is missing or empty");
+                    assert!(!product.location.is_empty(), "Product code is missing or empty");
+                    assert!(product.pcs >= 0, "Pcs should be a non-negative number");
+                  
+                }
+            }
+            Err(err) => panic!("Error occurred: {:?}", err),
+        }
+    }
 
+    #[tokio::test]
+    //fn get_product_locations_by_name
+    async fn get_product_locations_by_code() {
+        // Arrange: Initialize the connection pool
+        let db = Database::init().await.expect("Fail to connect to database");
+        
+        // Act: Call the function you want to test
+        let product_code = "806807071421".to_string();
+        let param = GetProductLocationsByCode { product_code };
+        let result = db.get_product_locations_by_code(&param).await;
+    
+        // Assert: Check if the result is as expected
+        match result {
+            Ok(unique_identifiers) => {
+                assert!(!unique_identifiers.is_empty(), "Result should not be empty");
+    
+                for product in unique_identifiers {
+                    assert!(!product.product_code.is_empty(), "Product code is missing or empty");
+                    assert!(!product.color.is_empty(), "Product code is missing or empty");
+                    assert!(!product.product_name.is_empty(), "Product code is missing or empty");
+                    assert!(!product.warehouse.is_empty(), "Product code is missing or empty");
+                    assert!(!product.location.is_empty(), "Product code is missing or empty");
+                    assert!(product.pcs >= 0, "Pcs should be a non-negative number");
+                  
+                }
+            }
+            Err(err) => panic!("Error occurred: {:?}", err),
+        }
     }
 }
 
