@@ -6,7 +6,7 @@ mod api;
 
 use crate::db::database::Database;
 
-use api::mysqlapi::{get_unique_identifiers, get_locations_for_single_product_by_code, get_locations_for_single_product_by_name, add_or_update_unique_identifier,  remove_unique_identifier};
+use api::mysqlapi::{get_unique_identifiers, get_locations_by_product_code, get_locations_by_product_name, add_or_update_unique_identifier,  remove_unique_identifier};
 
 
 
@@ -21,8 +21,8 @@ async fn main()-> std::io::Result<()> {
                 App::new()
                     .app_data(db_data.clone())
                     .service(get_unique_identifiers)
-                    .service(get_locations_for_single_product_by_code)
-                    .service(get_locations_for_single_product_by_name)
+                    .service(get_locations_by_product_code)
+                    .service(get_locations_by_product_name)
                     .service(add_or_update_unique_identifier)
                     .service(remove_unique_identifier)
                     

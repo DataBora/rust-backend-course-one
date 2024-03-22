@@ -25,7 +25,7 @@ async fn get_unique_identifiers(db: Data<Database>) -> impl Responder {
 
 //GET / unique identifier locations for single product by product name
 #[get("/unique_identifiers_name/{product_name}")]
-async fn get_locations_for_single_product_by_name( db: Data<Database>, product_name: Path<GetProductLocationsByName>) -> impl Responder {
+async fn get_locations_by_product_name( db: Data<Database>, product_name: Path<GetProductLocationsByName>) -> impl Responder {
     
     let is_valid = product_name.validate(); 
 
@@ -50,7 +50,7 @@ async fn get_locations_for_single_product_by_name( db: Data<Database>, product_n
 
 //GET / unique identifier locations for single product by product name
 #[get("/unique_identifiers_code/{product_code}")]
-async fn get_locations_for_single_product_by_code( db: Data<Database>, product_code: Path<GetProductLocationsByCode>) -> impl Responder {
+async fn get_locations_by_product_code( db: Data<Database>, product_code: Path<GetProductLocationsByCode>) -> impl Responder {
     
     let is_valid = product_code.validate(); 
 
