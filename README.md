@@ -6,7 +6,7 @@ Full WMS project that I implemented for my client: Production Company - Mega Pla
 
 This implementation doesn't require scanning the products after production, and before entering the Warehouse, but if needed, it's easy adoption.
 
-This real life WMS is covering 2 warehouse with over 3000 locations, and it is used by 2 warehouse managers, without any collisions.
+This real life WMS is covering 2 warehouses of 4000m2 with over 1000 locations, and it is used by 2 warehouse managers, without any collisions.
 
 ### Prerequisites
 
