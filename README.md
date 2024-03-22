@@ -1,6 +1,8 @@
 # RUST BACKEND COURSE
 
-This course is to show how I solved the part of real world implementation for Warehouse Management.
+## This repository has mising parts for us to figure out and solve through the course
+
+This course is to show real world implementation for Warehouse Management.
 
 Full WMS project that I implemented for my client: Production Company - Mega Plast Jovanovic d.o.o. Nova Pazova, Serbia, evolves around 5 tables, and 5 modules: Warehouse, Sales Orders, Operations Planing, Reservations, and Assembling.
 

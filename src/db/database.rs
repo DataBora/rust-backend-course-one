@@ -3,7 +3,9 @@ use dotenv::dotenv;
 
 use mysql_async::{prelude::Queryable, Error, Value, params};
 use crate::models::outgoing::RemoveUniqueIdentifierRequest;
-use crate::models::incoming::{GetProductLocationsByCode,GetProductLocationsByName, UniqueIdentifier,AddOrUpdateUniqueIdentifierRequest};
+
+// ----------  TEST 1, TEST 2 -------- //
+use crate::models::incoming::{UniqueIdentifier,AddOrUpdateUniqueIdentifierRequest};
 
 
 #[derive(Clone)]
@@ -30,43 +32,49 @@ impl Database {
         Ok(locations)
     }
 
+    // ------------ TEST 1.b --------------- //
+    // UNCOMENT FUNCTION BELLOW AND FIGURE OUT HOW TO SATISFY SCOPE TYPE
+
     //  get locations for single product by PRODUCT NAME
-    pub async fn get_product_locations_by_name(&self, product: &GetProductLocationsByName) -> Result<Vec<UniqueIdentifier>, Error> {
+    // pub async fn get_product_locations_by_name(&self, product: &GetProductLocationsByName) -> Result<Vec<UniqueIdentifier>, Error> {
 
-        let product_name = &product.product_name;
+    //     let product_name = &product.product_name;
         
-        let query = "SELECT * FROM unique_identifiers WHERE product_name = :product_name";
+    //     let query = "SELECT * FROM unique_identifiers WHERE product_name = :product_name";
      
-        let named_params = params! {
-            "product_name" => product_name,
-        };
+    //     let named_params = params! {
+    //         "product_name" => product_name,
+    //     };
       
-        let mut conn = self.pool.get_conn().await?;
+    //     let mut conn = self.pool.get_conn().await?;
 
-        let locations: Vec<UniqueIdentifier> = conn.exec(query, named_params.clone()).await?;
+    //     let locations: Vec<UniqueIdentifier> = conn.exec(query, named_params.clone()).await?;
 
-        Ok(locations)
-    }
+    //     Ok(locations)
+    // }
+
+    // -------------- TEST 2.a ----------------//
+    // UNCOMMENT FIUNCTION BELLOW AND INITIALIZE "location" VARIABLE
 
     // get locations for single product by PRODUCT CODE
-    pub async fn get_product_locations_by_code(&self, product: &GetProductLocationsByCode) -> Result<Vec<UniqueIdentifier>, Error> {
+    // pub async fn get_product_locations_by_code(&self, product: &GetProductLocationsByCode) -> Result<Vec<UniqueIdentifier>, Error> {
 
-        let product_code = &product.product_code;
+    //     let product_code = &product.product_code;
         
-        let query = "SELECT * FROM unique_identifiers WHERE product_code = :product_code";
+    //     let query = "SELECT * FROM unique_identifiers WHERE product_code = :product_code";
      
-        let named_params = params! {
-            "product_code" => product_code,
-        };
+    //     let named_params = params! {
+    //         "product_code" => product_code,
+    //     };
       
-        let mut conn = self.pool.get_conn().await?;
+    //     let mut conn = self.pool.get_conn().await?;
 
-        let locations: Vec<UniqueIdentifier> = conn.exec(query, named_params.clone()).await?;
+       
 
-        Ok(locations)
-    }
+    //     Ok(locations)
+    // }
 
-    //adding or updationg existing row in the database
+    //ADD or UPDATE existing row in the database
     pub async fn add_or_update_unique_identifier(&self, update_data: &AddOrUpdateUniqueIdentifierRequest) -> Result<(), mysql_async::Error> {
         // Extract information from update_data
         let color = &update_data.color;
@@ -106,7 +114,8 @@ impl Database {
         Ok(())
     }
 
-    //removing values from ocs column or removing row from database if pcs = 0
+
+    //REMOVE values from pcs column or REMOVE row from database if pcs = 0
     pub async fn remove_unique_identifier(&self, update_data: &RemoveUniqueIdentifierRequest) -> Result<(), mysql_async::Error> {
         // Build concatenated string based on the update data
         let update_concatenated_string = format!(
@@ -206,104 +215,68 @@ mod tests {
         }
     }
 
-    #[tokio::test]
-    async fn get_product_locations_by_name() {
-        // Arrange: Initialize the connection pool
-        let db = setup_test_database().await;
+    // #[tokio::test]
+    // async fn get_product_locations_by_name() {
+    //     // Arrange: Initialize the connection pool
+    //     let db = setup_test_database().await;
         
-        // Act: Call the function you want to test
-        let product_name = "Smart thermostat".to_string();
-        let param = GetProductLocationsByName { product_name };
-        let result = db.get_product_locations_by_name(&param).await;
+    //     // Act: Call the function you want to test
+    //     let product_name = "Smart thermostat".to_string();
+    //     let param = GetProductLocationsByName { product_name };
+    //     let result = db.get_product_locations_by_name(&param).await;
     
-        // Assert: Check if the result is as expected
-        match result {
-            Ok(unique_identifiers) => {
-                assert!(!unique_identifiers.is_empty(), "Result should not be empty");
+    //     // Assert: Check if the result is as expected
+    //     match result {
+    //         Ok(unique_identifiers) => {
+    //             assert!(!unique_identifiers.is_empty(), "Result should not be empty");
     
-                for product in unique_identifiers {
-                    assert!(!product.product_code.is_empty(), "Product code is missing or empty");
-                    assert!(!product.color.is_empty(), "Product code is missing or empty");
-                    assert!(!product.product_name.is_empty(), "Product code is missing or empty");
-                    assert!(!product.warehouse.is_empty(), "Product code is missing or empty");
-                    assert!(!product.location.is_empty(), "Product code is missing or empty");
-                    assert!(product.pcs >= 0, "Pcs should be a non-negative number");
+    //             for product in unique_identifiers {
+    //                 assert!(!product.product_code.is_empty(), "Product code is missing or empty");
+    //                 assert!(!product.color.is_empty(), "Product code is missing or empty");
+    //                 assert!(!product.product_name.is_empty(), "Product code is missing or empty");
+    //                 assert!(!product.warehouse.is_empty(), "Product code is missing or empty");
+    //                 assert!(!product.location.is_empty(), "Product code is missing or empty");
+    //                 assert!(product.pcs >= 0, "Pcs should be a non-negative number");
                   
-                }
-            }
-            Err(err) => panic!("Error occurred: {:?}", err),
-        }
-    }
+    //             }
+    //         }
+    //         Err(err) => panic!("Error occurred: {:?}", err),
+    //     }
+    // }
 
-    #[tokio::test]
-    async fn get_product_locations_by_code() {
-        // Arrange: Initialize the connection pool
-        let db = setup_test_database().await;
+    // #[tokio::test]
+    // async fn get_product_locations_by_code() {
+    //     // Arrange: Initialize the connection pool
+    //     let db = setup_test_database().await;
         
-        // Act: Call the function you want to test
-        let product_code = "806807071421".to_string();
-        let param = GetProductLocationsByCode { product_code };
-        let result = db.get_product_locations_by_code(&param).await;
+    //     // Act: Call the function you want to test
+    //     let product_code = "806807071421".to_string();
+    //     let param = GetProductLocationsByCode { product_code };
+    //     let result = db.get_product_locations_by_code(&param).await;
     
-        // Assert: Check if the result is as expected
-        match result {
-            Ok(unique_identifiers) => {
-                assert!(!unique_identifiers.is_empty(), "Result should not be empty");
+    //     // Assert: Check if the result is as expected
+    //     match result {
+    //         Ok(unique_identifiers) => {
+    //             assert!(!unique_identifiers.is_empty(), "Result should not be empty");
     
-                for product in unique_identifiers {
-                    assert!(!product.product_code.is_empty(), "Product code is missing or empty");
-                    assert!(!product.color.is_empty(), "Product code is missing or empty");
-                    assert!(!product.product_name.is_empty(), "Product code is missing or empty");
-                    assert!(!product.warehouse.is_empty(), "Product code is missing or empty");
-                    assert!(!product.location.is_empty(), "Product code is missing or empty");
-                    assert!(product.pcs >= 0, "Pcs should be a non-negative number");
+    //             for product in unique_identifiers {
+    //                 assert!(!product.product_code.is_empty(), "Product code is missing or empty");
+    //                 assert!(!product.color.is_empty(), "Product code is missing or empty");
+    //                 assert!(!product.product_name.is_empty(), "Product code is missing or empty");
+    //                 assert!(!product.warehouse.is_empty(), "Product code is missing or empty");
+    //                 assert!(!product.location.is_empty(), "Product code is missing or empty");
+    //                 assert!(product.pcs >= 0, "Pcs should be a non-negative number");
                   
-                }
-            }
-            Err(err) => panic!("Error occurred: {:?}", err),
-        }
-    }
+    //             }
+    //         }
+    //         Err(err) => panic!("Error occurred: {:?}", err),
+    //     }
+    // }
 
 
-
-    #[tokio::test]
-    async fn test_add_or_update_unique_identifier() {
-        // Arrange: Create a test connection pool and initialize the test database
-        let db = setup_test_database().await;
-
-        // Act: Call the function under test
-        let update_data = AddOrUpdateUniqueIdentifierRequest {
-            color: "Aquamarine".to_string(),
-            product_name: "Aromatherapy diffuser".to_string(),
-            warehouse: "HALA 5".to_string(),
-            location: "M5-A-1".to_string(),
-            pcs: 10,
-        };
-        let result = db.add_or_update_unique_identifier(&update_data).await;
-
-        // Assert: Check if the result is as expected
-        assert!(result.is_ok(), "Function should execute without errors");
-
-    }
-
-    #[tokio::test]
-    async fn test_remove_unique_identifier() {
-        // Arrange: Create a test connection pool and initialize the test database
-        let db = setup_test_database().await;
-
-        // Act: Call the function under test
-        let update_data = RemoveUniqueIdentifierRequest {
-            color: "Aquamarine".to_string(),
-            product_name: "Aromatherapy diffuser".to_string(),
-            warehouse: "HALA 5".to_string(),
-            location: "M5-A-1".to_string(),
-            pcs: 5, // Assuming we're removing 5 units
-        };
-        let result = db.remove_unique_identifier(&update_data).await;
-
-        // Assert: Check if the result is as expected
-        assert!(result.is_ok(), "Function should execute without errors");
-    }
+    // ---------- TEST 3 --------------- //
+    // WRITE TESTS FOR FUNCTIONS: add_or_update_unique_identifier(), remove_unique_identifier()
+    
 }
 
 
