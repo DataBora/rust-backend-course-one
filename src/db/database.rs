@@ -130,7 +130,7 @@ impl Database {
     
         if let Some(current_pcs_value) = current_pcs {
             if update_data.pcs > current_pcs_value {
-                // Respond with an error indicating that there's not enough pcs for deduction
+                // Respond error if there's not enough pcs for deduction
                 return Err(mysql_async::Error::from(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Not enough pcs for deduction")));
             }
         } else {

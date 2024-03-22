@@ -1,7 +1,10 @@
 use serde::{Deserialize, Serialize};
 use validator::Validate;
-use mysql_async::prelude::FromRow;
-use mysql_async::Row;
+
+// TEST 3 //
+//Uncoment imports bellow //
+// use mysql_async::prelude::FromRow;
+// use mysql_async::Row;
 
 #[derive(Serialize)]
 pub struct OutgoingIdentifier{
@@ -13,20 +16,8 @@ pub struct OutgoingIdentifier{
     pub pcs: i32,
 }
 
-impl FromRow for OutgoingIdentifier{
-    fn from_row(row: Row) -> Self{
-
-        let (concatenated_string, color, product_name, warehouse, location, pcs):(String, String, String, String, String, i32) = mysql_async::from_row(row);
-
-        OutgoingIdentifier{concatenated_string, color, product_name,warehouse,location,pcs}
-    }
-
-    fn from_row_opt(row: Row) -> Result<Self, mysql_async::FromRowError> {
-        let (concatenated_string, color, product_name, warehouse, location, pcs):(String, String, String, String, String, i32) = mysql_async::from_row(row);
-
-        Ok(OutgoingIdentifier{concatenated_string, color, product_name,warehouse,location,pcs})
-    }
-}
+// ----------- TEST 3 ------------- //
+// IMPLEMENT FROM ROW FOR OutgoingIdentifier //
 
 
 //adding unique outgoing identifier request

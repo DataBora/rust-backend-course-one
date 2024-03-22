@@ -29,8 +29,6 @@ impl FromRow for UniqueIdentifier {
 
         Ok(UniqueIdentifier{concatenated_string, product_code,color, product_name,warehouse,location,pcs})
     }
-    
-    
 }
 
 
