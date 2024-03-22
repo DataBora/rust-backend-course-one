@@ -164,30 +164,52 @@ impl Database {
 mod tests {
     use super::*;
 
+        //database connection pool for testing
+    async fn setup_test_database() -> Database {
+        dotenv().ok();
+        let db_url = env::var("MYSQL_DB_URL").expect("MYSQL_DB_URL not set in .env file");
+        let pool = mysql_async::Pool::new(db_url.as_str());
+        Database { pool }
+    }
+
     #[tokio::test]
-    //fn get_all_locations
     async fn test_get_all_locations() {
         // Arrange: Initialize the connection pool
-        let db = Database::init().await.expect("Failed to connect to database.");
+        let db = setup_test_database().await;
+
         // Act: Call the function you want to test
         let result = db.get_all_locations().await;
-        // Assert: Check if the result is as expected
+        
+       // Assert: Check if the result is as expected
         match result {
-            Ok(locations)=> {
-                assert!(!locations.is_empty())
-            }
-            Err(err)=>{
-                panic!("Error {:?}", err)
-            }
+            Ok(locations) => {
+                if locations.is_empty() {
+                    panic!("No locations found in the database. Ensure the database is not empty.");
+                } else {
+                    // Assert that locations is not empty
+                    assert!(!locations.is_empty(), "Locations should not be empty");
 
+                    // Additional assertions for each location if needed
+                    for location in locations {
+                        assert!(!location.product_code.is_empty(), "Product code should not be empty");
+                        assert!(!location.color.is_empty(), "Product code is missing or empty");
+                        assert!(!location.product_name.is_empty(), "Product code is missing or empty");
+                        assert!(!location.warehouse.is_empty(), "Product code is missing or empty");
+                        assert!(!location.location.is_empty(), "Product code is missing or empty");
+                        assert!(location.pcs >= 0, "Pcs should be a non-negative number");
+                    }
+                }
+            }
+            Err(err) => {
+                panic!("Error occurred: {:?}", err);
+            }
         }
     }
 
     #[tokio::test]
-    //fn get_product_locations_by_name
     async fn get_product_locations_by_name() {
         // Arrange: Initialize the connection pool
-        let db = Database::init().await.expect("Fail to connect to database");
+        let db = setup_test_database().await;
         
         // Act: Call the function you want to test
         let product_name = "Smart thermostat".to_string();
@@ -214,10 +236,9 @@ mod tests {
     }
 
     #[tokio::test]
-    //fn get_product_locations_by_name
     async fn get_product_locations_by_code() {
         // Arrange: Initialize the connection pool
-        let db = Database::init().await.expect("Fail to connect to database");
+        let db = setup_test_database().await;
         
         // Act: Call the function you want to test
         let product_code = "806807071421".to_string();
@@ -241,6 +262,47 @@ mod tests {
             }
             Err(err) => panic!("Error occurred: {:?}", err),
         }
+    }
+
+
+
+    #[tokio::test]
+    async fn test_add_or_update_unique_identifier() {
+        // Arrange: Create a test connection pool and initialize the test database
+        let db = setup_test_database().await;
+
+        // Act: Call the function under test
+        let update_data = AddOrUpdateUniqueIdentifierRequest {
+            color: "Aquamarine".to_string(),
+            product_name: "Aromatherapy diffuser".to_string(),
+            warehouse: "HALA 5".to_string(),
+            location: "M5-A-1".to_string(),
+            pcs: 10,
+        };
+        let result = db.add_or_update_unique_identifier(&update_data).await;
+
+        // Assert: Check if the result is as expected
+        assert!(result.is_ok(), "Function should execute without errors");
+
+    }
+
+    #[tokio::test]
+    async fn test_remove_unique_identifier() {
+        // Arrange: Create a test connection pool and initialize the test database
+        let db = setup_test_database().await;
+
+        // Act: Call the function under test
+        let update_data = RemoveUniqueIdentifierRequest {
+            color: "Aquamarine".to_string(),
+            product_name: "Aromatherapy diffuser".to_string(),
+            warehouse: "HALA 5".to_string(),
+            location: "M5-A-1".to_string(),
+            pcs: 5, // Assuming we're removing 5 units
+        };
+        let result = db.remove_unique_identifier(&update_data).await;
+
+        // Assert: Check if the result is as expected
+        assert!(result.is_ok(), "Function should execute without errors");
     }
 }
 
