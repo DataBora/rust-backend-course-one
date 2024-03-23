@@ -79,9 +79,10 @@ impl Database {
         // Extract information from update_data
         let color = &update_data.color;
         let product_name = &update_data.product_name;
-    
-        // Query products table to get product_code
-        let query_product = "SELECT product_code FROM products WHERE color = :color AND product_name = :product_name";
+        
+        // ------- TEST 4 ----------- //
+        // WRITE SQL QUERY FOR PRODUCTS TABLE TO GET product_code THAT WILL BE ADDED TO unique_identifier TABLE
+        let query_product = "";
         let params_product = params! {
             "color" => color,
             "product_name" => product_name,
