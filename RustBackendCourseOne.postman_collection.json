@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "cfad264c-6ff3-45d7-a091-47562fd61647",
+		"name": "RustBackendCourseOne",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29223089"
+	},
+	"item": [
+		{
+			"name": "GetLocations",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/unique_identifiers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unique_identifiers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddOrUpdateLocations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"color\": \"Peach\",\r\n  \"product_name\" : \"Fitness tracker\",\r\n  \"warehouse\": \"HALA 5\",\r\n  \"location\": \"M5-A-1\",\r\n  \"pcs\" : 100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/add_or_update_unique_identifier",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"add_or_update_unique_identifier"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateorDeleteLocation",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"color\": \"Peach\",\r\n  \"product_name\" : \"Fitness tracker\",\r\n  \"warehouse\": \"HALA 5\",\r\n  \"location\": \"M5-A-1\",\r\n  \"pcs\" : 50\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/remove_unique_identifiers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"remove_unique_identifiers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLocationsByPoductName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/unique_identifiers_name/Smart%20thermostat",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unique_identifiers_name",
+						"Smart%20thermostat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetLocationByProductCode",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/unique_identifiers_code/806807071434",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"unique_identifiers_code",
+						"806807071434"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
